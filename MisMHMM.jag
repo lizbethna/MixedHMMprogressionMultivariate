@@ -1,0 +1,80 @@
+/*
+A mixed hidden Markov model for multivariate monotone disease processes in the presence of measurement errors
+
+Authors:
+Lizbeth Naranjo (1), Emmanuel Lesaffre (2), Carlos J. Pérez (3)
+
+(1) Departamento de Matematicas, Facultad de Ciencias, Universidad Nacional Autonoma de Mexico, Ciudad de Mexico, Mexico.
+(2) L-BioStat, School of Public Health, KU Leuven, Leuven, Belgium.
+(3) Departamento de Matematicas, Facultad de Veterinaria, Universidad de Extremadura,  Caceres, Spain.
+
+*/
+ 
+model{
+
+### First examination, prevalence
+	for(i in 1:N){		
+	for(j in 1:J){
+			
+		ETA[i,j,1] <- inprod(X[i,],Beta.P) + inprod(Z[i,1,],Gamma.P) + Alpha[1] + Ui.P[i,j]       
+
+		Wtrue[i,j,1] ~ dnorm(ETA[i,j,1],1)	
+		Wobs[i,j,1] ~ dnorm(Wtrue[i,j,1],Tau[Xi[i,1]])
+		Pobs[i,j,1] <- step(Wobs[i,j,1])*0.999999
+		Yobs[i,j,1] ~ dbern(Pobs[i,j,1])				
+		
+### 2nd,3rd,...,Kth examination, incidence
+		for(k in 2:K){				
+			ETA[i,j,k] <- inprod(X[i,],Beta.I) + inprod(Z[i,k,],Gamma.I) + Alpha[k] + Ui.I[i,j]
+
+			Wtrue[i,j,k] ~ dnorm(ETA[i,j,k],1)T(Wtrue[i,j,k-1],)
+			Wobs[i,j,k] ~ dnorm(Wtrue[i,j,k],Tau[Xi[i,k]])
+			Pobs[i,j,k] <- step(Wobs[i,j,k])*0.999999
+			Yobs[i,j,k] ~ dbern(Pobs[i,j,k])
+
+		} 
+	}
+	Ui.P[i,1:J] ~ dmnorm(Uzeros,invOmega.P[,])
+	Ui.I[i,1:J] ~ dmnorm(Uzeros,invOmega.I[,])
+	}
+
+### Prior
+	for(k1 in 1:p){
+		Beta.P[k1] ~ dnorm(0.0,1.0E-2)
+		Beta.I[k1] ~ dnorm(0.0,1.0E-2)
+	}
+	for(k2 in 1:q){
+		Gamma.P[k2] ~ dnorm(0.0,1.0E-2)
+		Gamma.I[k2] ~ dnorm(0.0,1.0E-2)
+	}
+	for(k0 in 1:K){
+		Alpha[k0] ~ dnorm(0,1.0E-2)
+	}
+	for(ex in 1:Q){
+		Tau[ex] ~ dgamma(1.0E-2,1.0E-2)  
+	}
+	Sigma <- pow(Tau,-0.5)
+
+	invOmega.P[1:J,1:J] <- inverse(Omega.P[1:J,1:J])
+	invOmega.I[1:J,1:J] <- inverse(Omega.I[1:J,1:J])
+	L.omega.P [1,1] <- 1.0
+	L.omega.I [1,1] <- 1.0
+	for(i in 2:J){
+		L.omega.P[i,i] <- 1 
+		L.omega.I[i,i] <- 1 
+		for(j in 1:(i-1)){
+			L.omega.P[i,j] ~ dnorm(0,1)
+			L.omega.I[i,j] ~ dnorm(0,1)
+			L.omega.P[j,i] <- 0.0
+			L.omega.I[j,i] <- 0.0
+		}
+	}
+	for (i in 1:J){
+		for (j in 1:J){
+			Omega.P[i,j] <- inprod(L.omega.P[i,1:J],L.omega.P[j,1:J])
+			Omega.I[i,j] <- inprod(L.omega.I[i,1:J],L.omega.I[j,1:J])
+		}
+	}
+
+}
+
