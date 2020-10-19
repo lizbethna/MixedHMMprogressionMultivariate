@@ -1,12 +1,21 @@
 ##################################################
 ### 
-### A mixed hidden Markov model for multivariate monotone disease processes in the presence of measurement errors
+### A mixed hidden Markov model for multivariate 
+### monotone disease processes in the presence of 
+### measurement errors
 ###  
-### Lizbeth Naranjo (1), Emmanuel Lesaffre (2), Carlos J. Pérez (3).
+### Lizbeth Naranjo (1), 
+### Emmanuel Lesaffre (2), 
+### Carlos J. Pérez (3).
 ###
-### (1) Departamento de Matemáticas, Facultad de Ciencias, Universidad Nacional Autónoma de México, Ciudad de México, Mexico.
-### (2) L-BioStat, School of Public Health, KU Leuven, Leuven, Belgium.
-### (3) Departamento de Matemáticas, Facultad de Veterinaria, Universidad de Extremadura,  Cáceres, Spain.
+### Statistical Modelling
+### 
+### (1) Departamento de Matemáticas, Facultad de Ciencias, 
+###     Universidad Nacional Autónoma de México, Ciudad de México, Mexico.
+### (2) L-BioStat, School of Public Health, 
+###     KU Leuven, Leuven, Belgium.
+### (3) Departamento de Matemáticas, Facultad de Veterinaria, 
+###     Universidad de Extremadura,  Cáceres, Spain.
 ### 
 ##################################################
 
@@ -16,11 +25,10 @@
 ### Instructions: 
 ### Load the R libraries
 ##################################################
-library(rjags)
-library(MCMCpack)
-library(mnormt)
-library(coda)
-library(rjags)
+library(rjags)   # JAGS
+library(MCMCpack)   # MCMC methods
+library(mnormt)   # Multivariate normal
+library(coda)   # CODA
 library(dclone) # To run MCMC in
 library(snow)   # several cores
 
@@ -39,8 +47,6 @@ rnormleft <- function(tra,mu,sig){
 ### setwd("HERE")
 ##################################################
 setwd("~/FileDirectory/")
-setwd("~/Documents/Articulos/Emmanuel/4Codes/")
-setwd("C:/Users/propietario 1/Documents/ArticuloEmmanuel/4Codes/")
 getwd()
 ##################################################
 
@@ -55,11 +61,14 @@ J = 3   # teeth
 N = 1000   # subject
 K = 5   # time points
 
-### p exogenous covariates associated with first examination of the jth tooth of the ith subject
+### p exogenous covariates associated with first 
+### examination of the jth tooth of the ith subject
 p = 2    
 X = array(runif(N*p,0,1),dim=c(N,p))
 
-### q exogenous but possibly time-varying covariates associated with the jth tooth of the ith subject at time point t(i,k)
+### q exogenous but possibly time-varying covariates 
+### associated with the jth tooth of the ith subject 
+### at time point t(i,k)
 q = 2
 Z = array(runif(N*K*q,0,1),dim=c(N,K,q))
 
