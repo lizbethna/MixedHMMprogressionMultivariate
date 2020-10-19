@@ -6,6 +6,9 @@ A mixed hidden Markov model for multivariate monotone disease processes in the p
 Authors:
 Lizbeth Naranjo (1), Emmanuel Lesaffre (2), Carlos J. Pérez (3)
 
+Journal:
+Statistical Modelling
+
 (1) Departamento de Matemáticas, Facultad de Ciencias, Universidad Nacional Autónoma de México, Ciudad de México, Mexico.
 (2) L-BioStat, School of Public Health, KU Leuven, Leuven, Belgium.
 (3) Departamento de Matemáticas, Facultad de Veterinaria, Universidad de Extremadura,  Cáceres, Spain.
